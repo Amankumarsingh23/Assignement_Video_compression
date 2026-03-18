@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Compression Report — Sentio Mind</title>
+<style>
+  /* ── RESET ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── BASE ── */
+  :root {
+    --ink:     #0e0e0e;
+    --paper:   #f5f4f0;
+    --rule:    #d0cec8;
+    --muted:   #888;
+    --faint:   #bbb;
+    --mono:    'Courier New', 'Lucida Console', monospace;
+    --sans:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --blue:    #1a4a7a;
+    --amber:   #8a5a00;
+    --green:   #1a4a1a;
+    --drop:    #c8c6c0;
+  }
+
+  html { background: var(--paper); }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 0 80px 0;
+  }
+
+  /* ── 01  HEADER ── */
+  .header {
+    padding: 56px 48px 40px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero-number {
+    font-family: var(--mono);
+    font-size: clamp(72px, 14vw, 132px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.04em;
+    color: var(--ink);
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-top: 8px;
+  }
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--faint);
+    margin-top: 4px;
+  }
+  .header-right {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .company-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .stack-tags {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    padding: 2px 7px;
+    color: var(--muted);
+  }
+
+  /* ── 02  FILM STRIP ── */
+  .strip-section {
+    padding: 40px 48px 0;
+  }
+  .strip-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .filmstrip-wrap {
+    background: #1a1a1a;
+    border-radius: 3px;
+    padding: 10px 0;
+    overflow: hidden;
+  }
+  /* sprocket holes row */
+  .sprockets {
+    display: flex;
+    gap: 0;
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+  .sprocket {
+    width: 8px; height: 5px;
+    background: #333;
+    border-radius: 1px;
+    margin-right: 2px;
+    flex-shrink: 0;
+  }
+  .frames-row {
+    display: flex;
+    gap: 2px;
+    padding: 0 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    align-items: stretch;
+  }
+  .frames-row::-webkit-scrollbar { display: none; }
+  .fc {
+    width: 14px;
+    min-width: 14px;
+    height: 52px;
+    border-radius: 1px;
+    flex-shrink: 0;
+    position: relative;
+    cursor: default;
+    transition: transform .1s;
+  }
+  .fc:hover { transform: scaleY(1.15); z-index: 2; }
+  .fc-inner {
+    width: 100%; height: 100%;
+    background: #3a3835;
+    border-radius: 1px;
+  }
+  .fc-drop .fc-inner { background: #2e2c2a; }
+  .fc-face  { border: 1px solid rgba(100,160,255,0.5); }
+  .fc-ctx   { border: 1px solid rgba(200,150,50,0.5); }
+  .fc-mot   { border: 1px solid rgba(80,160,80,0.3); }
+  .fc-icon {
+    position: absolute;
+    bottom: 2px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 7px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1;
+  }
+  /* bottom sprockets */
+  .ruler-wrap {
+    position: relative;
+    height: 20px;
+    margin: 8px 8px 0;
+  }
+
+  /* ── 03  STAT CELLS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 40px 0 0;
+  }
+  .stat-cell {
+    padding: 28px 48px;
+    border-right: 1px solid var(--rule);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--ink);
+  }
+  .stat-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--faint);
+    margin-top: 6px;
+  }
+
+  /* ── 04  PIPELINE ── */
+  .pipeline-section {
+    padding: 48px 48px 0;
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .pipeline-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .pipe-step {
+    flex: 1;
+    min-width: 120px;
+    padding-right: 16px;
+  }
+  .pipe-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--faint);
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .pipe-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 3px;
+    letter-spacing: -.01em;
+  }
+  .pipe-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .pipe-caption {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--faint);
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+  .pipe-arrow {
+    font-family: var(--mono);
+    font-size: 18px;
+    color: var(--rule);
+    padding: 18px 8px 0;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+
+  /* ── 05  DELIVERABLES + LEGEND ── */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .deliverables {
+    padding: 36px 48px;
+    border-right: 1px solid var(--rule);
+  }
+  .legend {
+    padding: 36px 48px;
+  }
+  .bottom-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .deliverable-item {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .deliverable-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--faint);
+    flex-shrink: 0;
+    width: 18px;
+  }
+  .deliverable-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 36px;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+  .legend-text { }
+  .legend-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .legend-desc {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── 01 HEADER ── -->
+<div class='header'>
+  <div>
+    <div class='hero-number'>96.7%</div>
+    <div class='hero-label'>file size reduction</div>
+    <div class='hero-sub'>Class_8_cctv_video_1.mov · 2026-03-18 23:39:35</div>
+  </div>
+  <div class='header-right'>
+    <div class='company-tag'>Sentio Mind</div>
+    <div class='stack-tags'>
+      <span class='tag'>Python</span>
+      <span class='tag'>OpenCV</span>
+      <span class='tag'>ffmpeg</span>
+      <span class='tag'>imagehash</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 02 FILM STRIP ── -->
+<div class='strip-section'>
+  <div class='strip-label'>Frame timeline — 7,169 frames · each cell = one sampled frame</div>
+  <div class='filmstrip-wrap'>
+    <div class='sprockets'>
+      <div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div>
+    </div>
+    <div class='frames-row'>
+      
+            <div class='fc fc-ctx' title='Context frame · 0.0s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCv4vm1SK91PTLbKRG7kkR1O0MrlSo688YPAJ61wMyXC3rE3TiQ71byuW45ww9OnrxXqfiDXrXUb5NNS3aG8s7QTLKqgJhSMAe4wO1cR9kfXpYHmEEbkBvMjQqw5OV46jAqpOxMbNGFFrGoJ9mSG5eT5AoWMY59Pc9K2IvF93bhopljd0YgnGP5U3xVZDRrYvZbS55nkkJLOD2z/wDXqTw3o8F3pxmNxKMyMPurnI4OT35zRGrLuZSpRt7qP//Z') center/cover'>
+              <div class='fc-icon'>◈</div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_static · 1.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 1.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 2.9s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCt4wuNShu9U063DJD9reRHU7QyuVwDz6YPAJ69q4bUrS+0/UWW6maKZlJ/dHJ5UNhvbkf4V6dq+t22t6m2jpbGG6sbVHEoA2EDbgAe2R+tcZcW9x4kvRNevD5xxmRU2kbcqRx1BCiqk7ErU5+PV9QX7OkNw8nyBQsYwM+nucYrXi8X3duGimjjd0bBJ4/lSeKrL+xrcvZbS5wZpJCSzg9s0/w3o0N3p3nG4lGZGGNi5yODk9+c0Rqy7mUqUbe6j//Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 3.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 4.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 5.7s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCv4vm1OO81PTbYMsJu3kRlbbuVypAPPpg9CevauEu4L601F/NnaOY+Yp8k7jxnIb249OPSvUNV1u11vUm0hbZobqxtkbzQAEI4wB9MiuKurSbXbpJbjyElkmcGSNCrDaSGHB5Bxn6k1UnYmOpgRavqKmBILl5CEChUGAT6e56VsReL7y3DQzJE7oxBJH+FN8VWP9jW5eywXODNJITucHPAP/1807w3o0F3pvnG4lGZGH3VzxwcnvzmiNWXcylSjb3Uf//Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 6.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 7.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 8.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 9.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 10.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 11.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 12.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 13.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 14.4s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCt4xudSt7rVdPgDLALqSVWQ7d6sVIXqO2DwCevauDmS8gvnaSeSKY+YrLHywI6hvUcDnn6V6hrGsWfiG7m0gWpjubC3TL4ARlwMAYOeMiuIMM/iCaJ5xBGxkKq6btyKACVyTkjnuT3qpOwo2aMSLWNQX7OkNw8h2BQsYwM+nucYrXj8X3cAMUiI7IcE/8A6qXxPp50i3BsirSOQJpZSdzg9s//AKqXw1o0V3pxmaeRMysMBQTxwcnuc5ojVfcxlSil7qP/2Q==') center/cover'>
+            </div>
+            <div class='fc fc-mot' title='Motion · 15.3s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCv4um1OO81TTbcMkP2qSVXVtm5WKkA8jtg9CevauAC3pkF4s0qJNvCvGCd3ByD7cf/AFq9Uv8AW7TxBfTaWLVoZ9OhRS4ACsMDAGPTiuQnh+0GLRIlMfzFzOZSSUBYbdvr1Gfp05qmTGzRzUWsaiv2dIZ3kOwKFjGBn09z0rXTxfeQAxSRxuynBP8A+ql8UacdItwbIqzvgTSSk7nB4xml8M6PHeaaZnnkUmRhgKD04OT35BojVl3MpUope6j/2Q==') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 16.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 17.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 18.2s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCv4rl1VbvUtNtlKRm6eVWRtoZXKkL1GeMHOCevavPd9y94GS5dZJi0Y8vqSf4T6joPavVtQ1611vVTo5tWiubK2U+YoAQr8uAPpkVxXiPTHtArwNEvkgvE4BDqFGSpxwRx3pybTsKNmjKvZ9c0m7isrlnWdUAEaHIPp068Yq9H4vvIAYpFjdkOCcf4Uniq+upElvzHbLdBvLndFIDqOBgEnGep5FO8MaPDd6Z57TyqWkYY2g9OOvfpTVR9zGVKNtEf/9k=') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 19.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 20.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 21.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 22.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 23.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 23.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 24.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 25.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 26.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 27.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 28.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 29.7s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCDxdLqkd7qmmWwZYvtckish27lYqQOvpg8Anr2rz1muPtRkS6kDSBgfJ5OcZKn1HQf0r1i91208QX8+mLatDPp0SKXAAVhgYAx6cVx+qaB5t5b26NEiZwkigq6rjlcjr+PrTk2mTGzRztlqtyZrWJr9kjMe3Kj+IdF9z0HNaUXjG7gUxSpE7IcE/8A6uKi8XaZHpUCyW6rI4YPLJKSWbOf89am8M6NFd6Z50k8gJkYYCjtxye/SnGq+5nKlG3uo//Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 30.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 31.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 32.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 33.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 34.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 35.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 36.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 37.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 38.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 39.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 40.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 41.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 42.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 43.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 44.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 45.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 45.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 46.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 47.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 48.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 49.8s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCDxXNqy3+p6ZZrtgFzJNuDFCUcrtHXGOV5968+d5nnaUXTqZA6sYsk9OQ3fHTn9K9I1/xBHrN59jtbcW9zpirG8hjXEibd20dwMLjj1rntR0ET3dtFG0aIT+7cAq6rjlSR1/GnJ2YlZo5yLWNSBgWG4aRtgAWMYGfTpyRxWwnjC7twYpI4ZGQ4Lf8A6jTfFViNEtC9nhpCR50shO5wc8Z/+uDS+GtGiu9OMr3EikysAAo7ccnv0pxqy7mMqUbe6j//2Q==') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 50.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 51.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 52.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 53.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 54.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 55.5s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCjfXOr3yXliiTW4d3uBhdrPnadmM88DjAP5VwsnnG5kdrmVGbejeUCTnuG746c/pXpWq30PiW81nSERree1c7ZgBgBiWwMehrmbvw+8k1nbs8KnGBIgIZQByM9x9fWqk9SY6nPR6zqAMCxXDyHYAFjGBn04HJAxWwnjC4twYpI45GQ4Lf/AKqTxTp7aPbl7NlZyP38khO9we2f/rg9KXwxo6XemedJcOCZGGAg7cc560Rqy7mUqUbe6vuP/9k=') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 56.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 57.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 58.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 59.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 60.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 61.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 62.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 63.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 64.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 65.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 66.0s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDH1PVNYnsry2SKZczSSEr8hckjK4zg/dPQHv2rj5DMbl3N06u4dW8nJPTJDe3TkflXqF7rFtd+JL/T1tiJ7OQ3IJACEMQSv6+nc1yU+mR6q1jJbgRQyjMbOf3qqBhgSMBs4P51UmTGzRz8es6gDAsVy8hKABYxgZ9OB1HFbCeMLm3BikSORkOC3/6jS+KLE6LbO9ltaQjM80hO9gewPbmjw1pEd3ppmeeRcysAAoPQ45Pc0Rqy7mUqUUvdR//Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 67.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 67.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 68.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 69.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 70.8s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDK1PUtYuba6tkjaJXndywOzJJAKnntg9Ae/auLP2t5TcM80aTb0V48/Pxkj3HQE/pXqF/qNtqut6tpiQtG9rMZN2AFyx3HH48/ia5i5toL022iQGRWtpDJ5jcBAyrkLjk5CjOeOOneqk9SY2aObi1rUt0Cwzs52AbUGBn046kDFbKeL7y3XypIYpCP4vX8uKb4rsf7FtWeyIaQj9/M7HewPofrR4a0aK800zPczqDKwVeDgA46/XNONV9zKVKKXuo//9k=') center/cover'>
+            </div>
+            <div class='fc fc-mot' title='Motion · 71.8s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDJ1PUdaura7tVjaLdcSO5U7ASWAK9e209AfyriRJPPcs8dxJl0kDGHJIHo3t0/wr1S+1O11TX9V0xIGje2lMhOAFyx3HH48/nWXYeG5ZLTVE3wG0jVVGQQ6gkYwR3yBznpVNu4o2a1OFi1rUt0Cw3DOdgG1BgZ9OOpHFbcXivUIV8toUlKnG8A8/lxUHiyxGj25azAZzgzSyMd7Z6YI9/5Uvh/QrTULFrh5rhQZWCruBIAPc8Z5z2pxqvuZSpRS91H/9k=') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 72.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 73.7s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDJ1LUNaure7tFjaPdcSOxU7ASWAK9ccbT0B79q4iR5XuGkF0+ZA4PlEk+uG9unNerX2pWupeINU0xIGjkt5PMJwAuX+Y4/E5/OuQ1/Qd0sMMZiVefLkAIdVA5UkdfxpybuTGzRz8es6jmBYbl3OwAKi4GfTjqRxWzH4vu7dfKkSORl/i9fy4qTxbpsOg2Ud1pyDzpEVbh5GYlgVBOD1BORmq/h3Rbe908zNPOoMrBVyDgDjr9cn8aqNR9zOVGKXur7j//Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 74.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 75.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 76.6s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDF1HUNau7e7tUiaIPcyO207BksAV69tp7E9a4mR3e4aQ3TgyBwfKJJ9cN7dP8ACvV7vULXUtc1PT1hZJbeTzWOAFy53HHPrz+dcnqWgJJq2n25WEwtOqgjKuEzypI68Z/OnJu5MbNHNx6zqIaBYbl3OwABBgZ9PcjitmPxbfQL5bRpKVON+Dz+XFX/AIj2Nr4fuZF0m0ihG1PMO5skMOcZyRn6+tZegaFbX1i07zTqDKwVcg4A45P501Uls2ZypRXwr9D/2Q==') center/cover'>
+            </div>
+            <div class='fc fc-mot' title='Motion · 77.5s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDF1LUdZu7e7tUiaIPcSSNtOwZLAFevbaexPWuJkeR7hpPtTAyBwfKJJ9cH26f4V6xe39rqOu6npywsksEnmk4AX5zuOOfXnp61xmvaCXuraCPyQpbEb4Ksq91JHUU5N3JjZowY9Z1APCkNy0hCAARjAJ9MY69K2E8X3luvlSJFIy/xHjP5cVq/EjS7HwzsGj2+ySSFHmd3JLBiw4J5ydvrWV4d0aG709pjPMoMrBV4OAOOtUqkr7mcqUV8KP/Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 78.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 79.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 80.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 81.3s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDE1LUdZu7e7tUiaIPcSSOVPl8lgCvXttPY9+1cTulnuHkW4k+dXDGLJI9m9un+Feq3upWuo+INT0wQMksDmUtgBfnIY4/E5/OsvSdVtPDp1TTp1mZr2NYLdokX5Acr8xJHdh69KqV72Jja1zhk1m/DwrDcvIdgAEa4BPp9ela6+MLq2HlSRpIy/wAWOv5cUeJrUaJau9qA8r482ZyQxB64NHhzR4L3TjOZ51BkYBTg4xx1+uaI1H3M5Uo291H/2Q==') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 82.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 83.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 84.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 85.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 86.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 87.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 88.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 89.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 90.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 90.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 91.9s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 92.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 93.8s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 94.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 95.7s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDI1HUddvI7mygt3QG4klmKny8DI3Drjgr71xckrtcu/wBrdS4ZWMeT+De3T/CvT9U8RFde1iOwtokubFi+Zk3RsshBcYBHfn61y9xorX7WGTCnnKHV0UqyKVyV46jr1qpOzJjqjn11nUBJCsFy0h2ABYxgZ9OnUcVsR+L7mAGKSOORlOC3r+VHiuzGiWbvZqGkcjzZXY7iD2B/+vSeHNGhvdO89ridQZGAU4OMcHnvzk/jRGq+5lKlFL3Uf//Z') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 96.7s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 97.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 98.6s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 99.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 100.5s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 101.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 102.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 103.4s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 104.3s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 105.3s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDI1HUdauoruyRRF+/kkcZKFiXVSvXHBH86413kknZxcuC4cMYck/RvbpyPyr0nxDfLqevalp9kHt5rSbzGborb/mxx23YJHfJrn77QhdXVqiNGiMcpJgh1XHKnHX8aqTsxRs0c3FrWoF4UguGc7QoWMYGfTpya2Y/F91bgxSxROynBb/8AVxS+K7QaJbPLZANK5HnSux3EN2BpPDejxXmnmY3M6gysApAYgDjr36U41ZdzGVKKXuo//9k=') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 106.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 107.2s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 108.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 109.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 110.1s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 111.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 112.0s'>
+              <div class='fc-inner'></div>
+            </div>
+            <div class='fc fc-mot' title='Motion · 112.9s' style='background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAAOABwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwCp4iu9Tkmv7G1BWF7l5lKPtyr7TtPPYY7E1wUjSyXDSC7cGQOp8kkn1w3t05H5V3kGofbfFF7pKoiwRRhz+7AO8LGoAI7BVHaszUtB82+toFaNF3YSRQQ6qByuR1/GnJtMFZnNR6xqIeBIbppDsACxjAz6dOSBitmPxfd24MMixSMhwWzj+RpPFVomh2jvZKDK5HmzMx3kH0P1pfDuk295p5nE0qhpGGCqk8YBye/IPNVGrLuYSpR+yj//2Q==') center/cover'>
+            </div>
+            <div class='fc fc-drop' title='Frame dropped · discarded_duplicate · 113.9s'>
+              <div class='fc-inner'></div>
+            </div>
+    </div>
+    <div class='sprockets' style='margin-top:4px'>
+      <div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div><div class="sprocket"></div>
+    </div>
+  </div>
+  <div class='ruler-wrap'>
+    
+        <div style='position:absolute;left:0%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>0s</div>
+        <div style='position:absolute;left:10%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>12s</div>
+        <div style='position:absolute;left:20%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>25s</div>
+        <div style='position:absolute;left:30%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>37s</div>
+        <div style='position:absolute;left:40%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>49s</div>
+        <div style='position:absolute;left:50%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>61s</div>
+        <div style='position:absolute;left:60%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>74s</div>
+        <div style='position:absolute;left:70%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>86s</div>
+        <div style='position:absolute;left:80%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>98s</div>
+        <div style='position:absolute;left:90%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>110s</div>
+        <div style='position:absolute;left:100%;transform:translateX(-50%);
+                    font-size:9px;color:#555;font-family:monospace'>123s</div>
+  </div>
+</div>
+
+<!-- ── 03 STATS ── -->
+<div class='stats-row'>
+  <div class='stat-cell'>
+    <div class='stat-label'>Frames kept</div>
+    <div class='stat-value'>283</div>
+    <div class='stat-sub'>of 7,169 total</div>
+  </div>
+  <div class='stat-cell'>
+    <div class='stat-label'>Processing speed</div>
+    <div class='stat-value'>0.7×</div>
+    <div class='stat-sub'>real-time · target ≥4×</div>
+  </div>
+  <div class='stat-cell'>
+    <div class='stat-label'>Output duration</div>
+    <div class='stat-value'>0m 23s</div>
+    <div class='stat-sub'>from 2m 02s original</div>
+  </div>
+  <div class='stat-cell'>
+    <div class='stat-label'>Process time</div>
+    <div class='stat-value'>188.23s</div>
+    <div class='stat-sub'>614 MB → 20.5 MB</div>
+  </div>
+</div>
+
+<!-- ── 04 PIPELINE ── -->
+<div class='pipeline-section'>
+  <div class='section-label'>Algorithm — 5 steps · implemented exactly per spec</div>
+  <div class='pipeline-row'>
+    
+        <div class='pipe-step'>
+          <div class='pipe-num'>01</div>
+          <div class='pipe-title'>pHash</div>
+          <div class='pipe-sub'>Perceptual hash</div>
+          <div class='pipe-caption'>Drop if >95% similar
+to last kept frame</div>
+        </div><div class='pipe-arrow'>→</div>
+        <div class='pipe-step'>
+          <div class='pipe-num'>02</div>
+          <div class='pipe-title'>Optical flow</div>
+          <div class='pipe-sub'>Farneback motion</div>
+          <div class='pipe-caption'>Discard if score
+below 0.05 threshold</div>
+        </div><div class='pipe-arrow'>→</div>
+        <div class='pipe-step'>
+          <div class='pipe-num'>03</div>
+          <div class='pipe-title'>Haar cascade</div>
+          <div class='pipe-sub'>Face detection</div>
+          <div class='pipe-caption'>Keep regardless of
+motion if face found</div>
+        </div><div class='pipe-arrow'>→</div>
+        <div class='pipe-step'>
+          <div class='pipe-num'>04</div>
+          <div class='pipe-title'>Context frame</div>
+          <div class='pipe-sub'>Scene continuity</div>
+          <div class='pipe-caption'>Force-keep one frame
+every 3 seconds</div>
+        </div><div class='pipe-arrow'>→</div>
+        <div class='pipe-step'>
+          <div class='pipe-num'>05</div>
+          <div class='pipe-title'>ffmpeg</div>
+          <div class='pipe-sub'>H.264 re-encode</div>
+          <div class='pipe-caption'>Surviving frames
+to MP4 at 12 fps</div>
+        </div>
+  </div>
+</div>
+
+<!-- ── 05 DELIVERABLES + LEGEND ── -->
+<div class='bottom-row'>
+  <div class='deliverables'>
+    <div class='bottom-label'>Deliverables</div>
+    <div class='deliverable-item'>
+      <span class='deliverable-num'>01</span>
+      <span class='deliverable-name'>solution.py</span>
+    </div>
+    <div class='deliverable-item'>
+      <span class='deliverable-num'>02</span>
+      <span class='deliverable-name'>compressed_output.mp4</span>
+    </div>
+    <div class='deliverable-item'>
+      <span class='deliverable-num'>03</span>
+      <span class='deliverable-name'>compression_report.html</span>
+    </div>
+    <div class='deliverable-item'>
+      <span class='deliverable-num'>04</span>
+      <span class='deliverable-name'>segments_kept.json</span>
+    </div>
+    <div class='deliverable-item'>
+      <span class='deliverable-num'>05</span>
+      <span class='deliverable-name'>demo.mp4</span>
+    </div>
+  </div>
+  <div class='legend'>
+    <div class='bottom-label'>Frame legend</div>
+    <div class='legend-item'>
+      <div class='legend-swatch' style='background:#1a3a5c;
+           border:1px solid rgba(100,160,255,0.5)'></div>
+      <div class='legend-text'>
+        <div class='legend-title'>Face detected</div>
+        <div class='legend-desc'>Haar cascade found a human face.
+Kept unconditionally.</div>
+      </div>
+    </div>
+    <div class='legend-item'>
+      <div class='legend-swatch' style='background:#1a2a1a;
+           border:1px solid rgba(80,160,80,0.3)'></div>
+      <div class='legend-text'>
+        <div class='legend-title'>Motion detected</div>
+        <div class='legend-desc'>Optical flow score ≥ 0.15.
+Activity present in scene.</div>
+      </div>
+    </div>
+    <div class='legend-item'>
+      <div class='legend-swatch' style='background:#3a2a00;
+           border:1px solid rgba(200,150,50,0.5)'></div>
+      <div class='legend-text'>
+        <div class='legend-title'>Context frame</div>
+        <div class='legend-desc'>Force-kept every 3s.
+Scene continuity guarantee.</div>
+      </div>
+    </div>
+    <div class='legend-item'>
+      <div class='legend-swatch' style='background:#2e2c2a'></div>
+      <div class='legend-text'>
+        <div class='legend-title'>Dropped</div>
+        <div class='legend-desc'>pHash duplicate or static scene.
+Eliminated from output.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
