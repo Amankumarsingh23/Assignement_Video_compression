@@ -2,7 +2,7 @@
 **Sentio Mind · POC Assignment · Project 2**
 
 GitHub: https://github.com/Sentiodirector/Assignement_Video_compression.git
-Branch: FirstName_LastName_RollNumber
+Branch: Aman_Kumar_Singh_230114
 
 ---
 
