@@ -1,5 +1,5 @@
 # Smart Behavioral Video Compression
-### Sentio Mind · Project 2 · Internship Assignment
+### Sentio Mind · Project 2 ·  Assignment
 
 **Author:** Aman Kumar Singh &nbsp;|&nbsp; **Roll:** 230114 &nbsp;|&nbsp; **Branch:** `Aman_Kumar_Singh_230114`
 
@@ -16,6 +16,8 @@ a dropped frame of someone entering a classroom is gone forever.
 This pipeline solves it differently: **keep every frame that matters, discard everything that doesn't.**
 
 ---
+
+![Description](html_image.png)
 
 ## Results
 
